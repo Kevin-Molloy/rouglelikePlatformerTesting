@@ -1,0 +1,115 @@
+[gd_scene load_steps=20 format=3 uid="uid://cs7fp7nydcws1"]
+
+[ext_resource type="Script" uid="uid://cpa0ys0kfo6yn" path="res://scripts/player.gd" id="1_3v2ag"]
+[ext_resource type="Texture2D" uid="uid://bcgt51ujqokq0" path="res://assets/images/player/hnavle.sprite.png" id="2_jej6c"]
+[ext_resource type="AudioStream" uid="uid://iyqmasd26bwr" path="res://assets/sounds/jump.wav" id="3_f1ej7"]
+[ext_resource type="Script" uid="uid://bhvn4y2ngk3vd" path="res://scripts/States/StateMachine.gd" id="4_oprun"]
+[ext_resource type="Script" uid="uid://bib24sraot4k1" path="res://scripts/States/PlayerStatesFolder/PlayerIdle.gd" id="5_a8ls1"]
+[ext_resource type="Script" uid="uid://bdp2u0vwkrym7" path="res://scripts/States/PlayerStatesFolder/PlayerRunning.gd" id="6_qfm1y"]
+[ext_resource type="Script" uid="uid://xc7g7fuocndi" path="res://scripts/States/PlayerStatesFolder/PlayerJumping.gd" id="7_fulsm"]
+[ext_resource type="Script" uid="uid://bmpqb3ljxl2km" path="res://scripts/States/PlayerStatesFolder/PlayerFalling.gd" id="8_4r5pv"]
+[ext_resource type="Script" uid="uid://c8odm13jnvvr0" path="res://scripts/States/PlayerStatesFolder/PlayerSliding.gd" id="9_60mlk"]
+[ext_resource type="Script" uid="uid://c17m3rrkyvv0i" path="res://scripts/States/PlayerStatesFolder/PlayerWallJumping.gd" id="10_i4ail"]
+[ext_resource type="Script" uid="uid://b2n22tnxqmksx" path="res://scripts/States/PlayerStatesFolder/PlayerDashing.gd" id="11_a38lo"]
+[ext_resource type="Script" uid="uid://d1v4j2a2t6631" path="res://scripts/States/PlayerStatesFolder/PlayerDoubleJumping.gd" id="12_4ni07"]
+[ext_resource type="Script" uid="uid://crcvk04yj5h57" path="res://scripts/States/PlayerStatesFolder/PlayerCape.gd" id="13_jej6c"]
+[ext_resource type="Script" uid="uid://duskcva1wd4aj" path="res://scripts/States/PlayerStatesFolder/PlayerGroundPounding.gd" id="14_f1ej7"]
+[ext_resource type="AudioStream" uid="uid://6txds40e2371" path="res://assets/sounds/springJump.wav" id="15_oprun"]
+[ext_resource type="AudioStream" uid="uid://bxebs4183y6ml" path="res://assets/sounds/doubleJump.wav" id="15_qfm1y"]
+[ext_resource type="AudioStream" uid="uid://dys3bdnuh3nn" path="res://assets/sounds/wallJump.wav" id="17_fulsm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lwmn2"]
+size = Vector2(22.333334, 22.333334)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qfm1y"]
+size = Vector2(18, 17.333)
+
+[node name="Player" type="CharacterBody2D"]
+scale = Vector2(3, 3)
+collision_mask = 2
+script = ExtResource("1_3v2ag")
+metadata/_edit_vertical_guides_ = [-7619.0, -15097.0]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_jej6c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1.166667, -0.16666698)
+shape = SubResource("RectangleShape2D_lwmn2")
+
+[node name="jumpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_f1ej7")
+
+[node name="RayCastRight" type="RayCast2D" parent="."]
+target_position = Vector2(17, 0)
+collision_mask = 2
+
+[node name="RayCastUp" type="RayCast2D" parent="."]
+target_position = Vector2(0.33333334, -16)
+collision_mask = 2
+
+[node name="RayCastLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-15.333334, 0.33333334)
+collision_mask = 2
+
+[node name="RayCastBottom" type="RayCast2D" parent="."]
+target_position = Vector2(0, 13.333334)
+collision_mask = 2
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("4_oprun")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("5_a8ls1")
+
+[node name="Running" type="Node" parent="StateMachine"]
+script = ExtResource("6_qfm1y")
+
+[node name="Jumping" type="Node" parent="StateMachine"]
+script = ExtResource("7_fulsm")
+
+[node name="Falling" type="Node" parent="StateMachine"]
+script = ExtResource("8_4r5pv")
+
+[node name="Sliding" type="Node" parent="StateMachine"]
+script = ExtResource("9_60mlk")
+
+[node name="WallJumping" type="Node" parent="StateMachine"]
+script = ExtResource("10_i4ail")
+
+[node name="Dashing" type="Node" parent="StateMachine"]
+script = ExtResource("11_a38lo")
+
+[node name="DoubleJumping" type="Node" parent="StateMachine"]
+script = ExtResource("12_4ni07")
+
+[node name="Cape" type="Node" parent="StateMachine"]
+script = ExtResource("13_jej6c")
+
+[node name="GroundPounding" type="Node" parent="StateMachine"]
+script = ExtResource("14_f1ej7")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(0.33333334, 0)
+
+[node name="doubleJumpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_qfm1y")
+pitch_scale = 1.81
+
+[node name="springJumpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_oprun")
+bus = &"Spring Jump"
+
+[node name="wallJumpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("17_fulsm")
+pitch_scale = 5.1
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(0.667, 0.00016657512)
+shape = SubResource("RectangleShape2D_qfm1y")
+debug_color = Color(0.9408318, 0.219434, 0.28519142, 0.41960785)
